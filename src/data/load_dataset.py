@@ -12,6 +12,7 @@ def load_spambase():
     data = np.loadtxt(spambase, delimiter=',')
     X = data[:, :-1]
     y = data[:, -1]
+    y = y.astype(int)
     return X, y
 
 
