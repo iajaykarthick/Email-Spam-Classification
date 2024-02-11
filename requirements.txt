@@ -1,6 +1,9 @@
 ipykernel
 requests
 numpy==1.26.0
+pyarrow
 pandas
 matplotlib
 seaborn
+scipy
+scikit-learn
