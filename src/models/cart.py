@@ -1,46 +1,16 @@
+
 import numpy as np
 
 
 class CART:
-    """
-        CART works by repeatedly partitioning the data into subsets based on the feature that results in 
-        the highest information gain (IG) or the lowest Gini impurity for classification, 
-        and the lowest mean squared error (MSE) or mean absolute error (MAE) for regression. 
-        This process is recursively applied to each subset until a stopping criterion is met 
-        (e.g., maximum depth of the tree, minimum samples in a node, or no further improvement).
-        
-        ### For Classification
-
-        - **Gini Impurity**: 
-            A measure of how often a randomly chosen element from the set would be incorrectly labeled 
-            if it was randomly labeled according to the distribution of labels in the subset.
-            The Gini impurity of a dataset is:
-
-            $$ Gini = 1 - \sum_{i=1}^{n} p_i^2 $$
-
-            where $p_i$ is the proportion of items labeled with class $i$ in the dataset.
-        
-        - **Information Gain**: The change in entropy after the dataset is split on an attribute. It's used to decide which feature to split on at each step in building the tree.
-
-            $$ IG(D, a) = Entropy(D) - \sum_{v \in Values(a)} \frac{|D_v|}{|D|} Entropy(D_v) $$
-
-            where $Entropy(D)$ is the entropy of the dataset $D$, $Values(a)$ are the unique values of attribute $a$, and $D_v$ is the subset of $D$ for which attribute $a$ has value $v$.
-            
-        ### Pre-pruning
-        - `max_depth`: Stop tree growth after reaching a specified depth.
-
-        - `min_samples_split`: Don't split nodes if fewer than a set number of samples are present.
-
-        - `min_impurity_decrease`: Only split nodes if a minimum impurity reduction is achieved.
-
-        - `max_features`: Considers only a random subset of features at each split (similar to Random Forests). This introduces more randomness and helps in diversity and reduce overfitting.
-    """
     class Node:
-        def __init__(self, feature=None, threshold=None, left=None, right=None, value=None):
+        def __init__(self, feature=None, threshold=None, left=None, right=None, num_samples=None, class_distribution=None, value=None):
             self.feature = feature # feature index to split
             self.threshold = threshold # threshold to split
             self.left = left # left node
             self.right = right # right node
+            self.num_samples = num_samples # number of samples in the node
+            self.class_distribution = class_distribution # class distribution of samples in the node
             self.value = value # value of the node if it is a leaf node
             
         def is_leaf(self):
@@ -52,11 +22,12 @@ class CART:
             return f"Node: feature={self.feature}, threshold={self.threshold}"
     
     
-    def __init__(self, max_depth=None, min_samples_split=2, min_impurity_decrease=0, max_features=None):
+    def __init__(self, max_depth=None, min_samples_split=2, min_impurity_decrease=0, max_features=None, criterion='gini'):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
         self.min_impurity_decrease = min_impurity_decrease
         self.max_features = max_features
+        self.criterion = criterion
         self.root = None
         
         # for progress tracking
@@ -76,7 +47,7 @@ class CART:
             self.max_reached_depth = depth
         
         # check if stopping criteria are not met
-        if depth < self.max_depth and num_samples >= self.min_samples_split:
+        if (self.max_depth is None or depth < self.max_depth) and num_samples >= self.min_samples_split:
             # find the best split
             best_split = self._best_split(X, y, num_samples, num_features)  
             # if the gain is greater than the minimum impurity decrease
@@ -89,7 +60,9 @@ class CART:
                     feature=best_split['feature_index'],
                     threshold=best_split['threshold'],
                     left=left_node,
-                    right=right_node
+                    right=right_node,
+                    num_samples=num_samples,
+                    class_distribution=np.bincount(y)
                 )
                 return current_node
         
@@ -97,7 +70,7 @@ class CART:
         if len(y) == 0:
             raise ValueError("No samples in the node. This should not happen.")
         leaf_value = self._to_leaf(y)
-        return self.Node(value=leaf_value)
+        return self.Node(num_samples=num_samples, class_distribution=np.bincount(y), value=leaf_value)
         
     def _to_leaf(self, y):
         # majority class 
@@ -142,6 +115,12 @@ class CART:
         return left_indices, right_indices
     
     
+    def _gini(self, y):
+        # y should be non-negative integer labels
+        probabilities = np.bincount(y) / len(y)
+        gini = 1 - np.sum([p**2 for p in probabilities if p > 0])
+        return gini
+    
     def _entropy(self, y):
         # y should be non-negative integer labels
         probabilities = np.bincount(y) / len(y)
@@ -152,11 +131,16 @@ class CART:
         weight_1 = len(left_child) / len(y)
         weight_2 = len(right_child) / len(y)
         
-        parent_entropy = self._entropy(y)
-        left_entropy = self._entropy(left_child)
-        right_entropy = self._entropy(right_child)
+        if self.criterion == 'gini':
+            parent_impurity = self._gini(y)
+            left_impurity = self._gini(left_child)
+            right_impurity = self._gini(right_child)
+        else:
+            parent_impurity = self._entropy(y)
+            left_impurity = self._entropy(left_child)
+            right_impurity = self._entropy(right_child) 
         
-        gain = parent_entropy - (weight_1 * left_entropy + weight_2 * right_entropy)
+        gain = parent_impurity - (weight_1 * left_impurity + weight_2 * right_impurity)
         
         return gain
     
@@ -172,4 +156,59 @@ class CART:
             return self._predict_input(x, node.left)
         else:
             return self._predict_input(x, node.right)
+
+    def export_graphviz(self, full_verbose=False, leaf_verbose=False):
         
+        # Initialize the unique ID generator
+        unique_id_generator = self._unique_id_generator()
+        
+        # Start the dot string with the graph type
+        dot_string = "digraph Tree {\n size=\"10,10\"; rankdir=\"LR\";\n"
+    
+        # Begin the recursive process starting from the root node
+        dot_string, root_id = self._export_node(self.root, dot_string, unique_id_generator, full_verbose=full_verbose, leaf_verbose=leaf_verbose)
+
+        # Close the graph string
+        dot_string += "}\n"
+
+        return dot_string
+
+    def _unique_id_generator(self):
+        current_id = 0
+        while True:
+            yield current_id
+            current_id += 1
+
+    def _export_node(self, node, dot_string, unique_id_generator, full_verbose=False, leaf_verbose=False):
+        # Get a unique ID for the current node
+        unique_id = next(unique_id_generator)
+        if node.is_leaf():
+            
+            # Leaf node definition with value
+            if full_verbose or leaf_verbose:
+                dot_string += f"  {unique_id} [shape=box, label=\"Predicted class: {node.value} \\n samples = {node.num_samples}\\n class distribution = {node.class_distribution}\"];\n"
+            else:
+                dot_string += f"  {unique_id} [shape=box, label=\"Predicted class: {node.value}\"];\n"
+            
+        
+        else:
+            
+            # Decision node definition
+            if full_verbose:
+                dot_string += f"  {unique_id} [label=\"X[{node.feature}] <= {node.threshold:.3f} \\n samples = {node.num_samples}\\n class distribution = {node.class_distribution}\"];\n"
+            else:
+                dot_string += f"  {unique_id} [label=\"X[{node.feature}] <= {node.threshold:.3f}\"];\n"            
+            
+            # Recursively process the left child
+            dot_string, left_child_id = self._export_node(node.left, dot_string, unique_id_generator, full_verbose=full_verbose, leaf_verbose=leaf_verbose)
+            
+            # Add edge to the left child
+            dot_string += f"  {unique_id} -> {left_child_id} [label=\"true\"];\n"
+            
+            # Recursively process the right child
+            dot_string, right_child_id = self._export_node(node.right, dot_string, unique_id_generator, full_verbose=full_verbose, leaf_verbose=leaf_verbose)
+            
+            # Add edge to the right child
+            dot_string += f"  {unique_id} -> {right_child_id} [label=\"false\"];\n"
+
+        return dot_string, unique_id
