@@ -31,7 +31,6 @@ class CART:
         self.root = None
         
         # for progress tracking
-        self.current_depth = 0
         self.max_reached_depth = 0
         
     def fit(self, X, y, verbose=False):
@@ -69,6 +68,7 @@ class CART:
         # leaf node
         if len(y) == 0:
             raise ValueError("No samples in the node. This should not happen.")
+        
         leaf_value = self._to_leaf(y)
         return self.Node(num_samples=num_samples, class_distribution=np.bincount(y), value=leaf_value)
         
