@@ -8,6 +8,7 @@ DATA_DIR = os.path.join(ROOT_DIR, 'data')
 RAW_DATA_DIR = os.path.join(DATA_DIR, 'raw')
 PROCESSED_DATA_DIR = os.path.join(DATA_DIR, 'processed')
 MODEL_DIR = os.path.join(ROOT_DIR, 'models')
+EXPERIMENT_DIR = os.path.join(ROOT_DIR, 'experiments')
 
 
 # Create the directories if they don't exist
