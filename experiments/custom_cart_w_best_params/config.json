@@ -1,0 +1,16 @@
+{
+    "name": "custom_cart_w_best_params",
+    "description": "Custom cart with best parameters",
+    "model_class": "src.models.cart.CART",
+    "model_params": {
+        "max_depth": 20,
+        "min_samples_split": 10,
+        "min_impurity_decrease": 0,
+        "max_features": 42
+    },
+    "metrics": [
+        "accuracy",
+        "f1",
+        "roc_auc"
+    ]
+}
