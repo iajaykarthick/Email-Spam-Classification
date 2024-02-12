@@ -1,4 +1,5 @@
 import numpy as np
+from src.evaluation.classification_metrics import ClassificationMetrics
 
 
 class CART:
@@ -177,6 +178,13 @@ class CART:
             return self._predict_input(x, node.left)
         else:
             return self._predict_input(x, node.right)
+        
+    def evaluate(self, X, y):
+        predictions = self.predict(X)
+        if self.criterion == 'mse':
+            return np.mean((y - predictions) ** 2)
+        # classification
+        return ClassificationMetrics(y, predictions)
 
     def export_graphviz(self, full_verbose=False, leaf_verbose=False):
         
