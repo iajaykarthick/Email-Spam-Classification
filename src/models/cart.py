@@ -1,4 +1,3 @@
-
 import numpy as np
 
 
@@ -61,21 +60,29 @@ class CART:
                     left=left_node,
                     right=right_node,
                     num_samples=num_samples,
-                    class_distribution=np.bincount(y)
+                    class_distribution=self._class_distribution(y)
                 )
                 return current_node
         
         # leaf node
         if len(y) == 0:
             raise ValueError("No samples in the node. This should not happen.")
-        
         leaf_value = self._to_leaf(y)
-        return self.Node(num_samples=num_samples, class_distribution=np.bincount(y), value=leaf_value)
+        return self.Node(
+            num_samples=num_samples, 
+            class_distribution=self._class_distribution(y),
+            value=leaf_value
+        )
         
     def _to_leaf(self, y):
-        # majority class 
-        # y should be non-negative integer labels
-        return np.bincount(y).argmax()
+        if self.criterion == 'mse':
+            return np.mean(y)
+        return self._bincount(y).argmax()
+        
+    def _class_distribution(self, y):
+        if self.criterion == 'mse':
+            return None
+        return self._bincount(y)
     
     def _best_split(self, X, y, num_samples, num_features):
         best_split = {}
@@ -114,18 +121,26 @@ class CART:
         right_indices = np.where(X[:, feature_index] > threshold)[0]
         return left_indices, right_indices
     
+    def _bincount(self, y):
+        unique, counts = np.unique(y, return_counts=True)
+        return np.array([0 if i not in unique else counts[unique == i][0] for i in range(max(unique) + 1)])
     
     def _gini(self, y):
-        # y should be non-negative integer labels
-        probabilities = np.bincount(y) / len(y)
+        probabilities = self._bincount(y) / len(y)
         gini = 1 - np.sum([p**2 for p in probabilities if p > 0])
         return gini
     
     def _entropy(self, y):
         # y should be non-negative integer labels
-        probabilities = np.bincount(y) / len(y)
+        probabilities = self._bincount(y) / len(y)
         entropy = np.sum([p * -np.log2(p) for p in probabilities if p > 0])
         return entropy
+    
+    # Regression - MSE
+    def _mse(self, y):
+        mean_y = np.mean(y)
+        mse = np.mean((y - mean_y) ** 2)
+        return mse
     
     def _information_gain(self, y, left_child, right_child):
         weight_1 = len(left_child) / len(y)
@@ -135,6 +150,12 @@ class CART:
             parent_impurity = self._gini(y)
             left_impurity = self._gini(left_child)
             right_impurity = self._gini(right_child)
+        
+        elif self.criterion == 'mse':
+            parent_impurity = self._mse(y)
+            left_impurity = self._mse(left_child)
+            right_impurity = self._mse(right_child)
+        
         else:
             parent_impurity = self._entropy(y)
             left_impurity = self._entropy(left_child)
