@@ -1,6 +1,8 @@
 import numpy as np
 from src.models.cart import CART
 
+from src.evaluation.classification_metrics import ClassificationMetrics
+
 class GradientBoostingBinaryClassifier:
     def __init__(self, n_estimators, learning_rate=0.1, max_depth=3, min_samples_split=2):
         self.n_estimators = n_estimators
@@ -53,3 +55,9 @@ class GradientBoostingBinaryClassifier:
         # Predict class labels for samples in X
         proba = self.predict_proba(X)
         return np.argmax(proba, axis=1)
+    
+    def evaluate(self, X, y):
+        # Evaluate the model using the given data
+        y_pred = self.predict(X)
+        metrics = ClassificationMetrics(y, y_pred)
+        return metrics
