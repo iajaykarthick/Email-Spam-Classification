@@ -1,0 +1,16 @@
+{
+    "name": "custom_cart_v2",
+    "description": "Custom cart v2",
+    "model_class": "src.models.cart.CART",
+    "model_params": {
+        "max_depth": 10,
+        "min_samples_split": 5,
+        "min_impurity_decrease": 0,
+        "max_features": 28
+    },
+    "metrics": [
+        "accuracy",
+        "f1",
+        "roc_auc"
+    ]
+}
