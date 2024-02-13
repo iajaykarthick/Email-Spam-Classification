@@ -21,13 +21,15 @@ class Experiment:
         self.model_params = model_params
         self.metrics = metrics
         self.n_splits = n_splits
-        self.random_state = random_state    
+        self.random_state = random_state
         
         self.experiment_dir = os.path.join(EXPERIMENT_DIR, self.name)
         self.config_path = os.path.join(self.experiment_dir, 'config.json')
         if not os.path.exists(self.config_path):
             self.setup()
         self.results_path = os.path.join(self.experiment_dir, 'results.json')
+        
+        self.metrics_obj = None
 
     @staticmethod
     def from_config(config_path):
@@ -61,12 +63,12 @@ class Experiment:
             json.dump(config, f, indent=4)
         print(f'Experiment Configuration saved to {self.config_path}')
         
-    def save_results(self):
+    def save_results(self, results):
         """Save the results of the experiment to a json file"""
         results = {
             'name': self.name,
             'description': self.description,
-            'results': self.results
+            'results': results
         }
         with open(self.results_path, 'w') as f:
             json.dump(results, f, indent=4)
@@ -77,8 +79,8 @@ class Experiment:
             self.setup()
             print(f'Running experiment {self.name}...')
             # Run the experiment
-            self.results = self._run_experiment()
-            self.save_results()
+            results = self._run_experiment()
+            self.save_results(results)
             print(f'Experiment {self.name} completed successfully!')
         except Exception as e:
             print(f'Error running experiment {self.name}: {e}')
@@ -95,22 +97,50 @@ class Experiment:
         self.load_model()
         X, y = load_spambase()
         
-        kf = KFold(n_splits=self.n_splits, shuffle=True, random_state=self.random_state)
-        fold_results = []
-        
-        for i, (train_index, test_index) in enumerate(kf.split(X)):
-            print(f'Running fold {i+1}...')
-            X_train, X_test = X[train_index], X[test_index]
-            y_train, y_test = y[train_index], y[test_index]
-            
+        if self.n_splits > 1:
+            # Use cross-validation
+            kfold = KFold(n_splits=self.n_splits, random_state=self.random_state, shuffle=True)
+            fold_results = []
+            for train_index, test_index in kfold.split(X):
+                print(f'Running fold {len(fold_results) + 1}...')
+                
+                X_train, X_test = X[train_index], X[test_index]
+                y_train, y_test = y[train_index], y[test_index]
+                self.model.fit(X_train, y_train)
+                y_pred, y_pred_proba = self.model.predict(X_test)
+                metrics_obj = ClassificationMetrics(
+                    exp_id=self.name + f'_fold_{len(fold_results) + 1}',
+                    y_true=y_test,
+                    y_pred=y_pred,
+                    y_pred_proba=y_pred_proba
+                )
+
+                fold_results.append({
+                    'fold': len(fold_results) + 1,
+                    'metrics': metrics_obj.evaluate(return_metrics=True, select_metrics=self.metrics)
+                })
+                
+                if self.metrics_obj is None:
+                    self.metrics_obj = []
+                self.metrics_obj.append(metrics_obj)
+                
+            results = fold_results
+        else:
+            # Use a single train-test split
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=self.random_state)
             self.model.fit(X_train, y_train)
-            metrics_obj: ClassificationMetrics = self.model.evaluate(X_test, y_test)
-            fold_results.append(metrics_obj.evaluate(return_metrics=True))
-        
-        aggregate_results = self._aggregate_results(fold_results)
-        
-        print(f'Experiment {self.name} results: {aggregate_results}')
-        return aggregate_results
+            y_pred, y_pred_proba = self.model.predict(X_test)
+            metrics_obj = ClassificationMetrics(
+                exp_id=self.name,
+                y_true=y_test,
+                y_pred=y_pred,
+                y_pred_proba=y_pred_proba
+            )
+            results = metrics_obj.evaluate(return_metrics=True, select_metrics=self.metrics)
+            self.metrics_obj = metrics_obj
+        return results
+            
+                    
     
     def _aggregate_results(self, fold_results):
 
@@ -137,7 +167,16 @@ class Experiment:
         
         # Calculate mean for numeric metrics
         aggregated_results = {metric: np.mean(values) for metric, values in accumulated.items() if metric != 'confusion_matrix'}
+        
+        self.results = ClassificationMetrics.from_results(
+            exp_id=self.name,
+            results=aggregated_results
+        )
+        
         # Confusion matrix is already accumulated, so just assign it
         aggregated_results['confusion_matrix'] = accumulated['confusion_matrix'].tolist()
 
         return aggregated_results
+    
+    
+    
