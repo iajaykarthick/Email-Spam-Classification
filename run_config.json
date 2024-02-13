@@ -1,3 +1,4 @@
 {
-    "experiment_id": "custom_cart_v2"
+    "experiment_id": "custom_cart_v2",
+    "description": "Decision Tree Cart - own implementation"
 }
