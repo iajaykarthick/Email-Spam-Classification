@@ -35,8 +35,8 @@ class GradientBoostingBinaryClassifier:
             self.trees.append(tree)
             
             # Update the model with the predictions of the new tree
-            update = tree.predict(X)
-            Fm += self.learning_rate * update
+            y_pred, y_pred_proba = tree.predict(X)
+            Fm += self.learning_rate * y_pred
             
     def predict_proba(self, X):
         # Calculate initial predictions
@@ -44,8 +44,8 @@ class GradientBoostingBinaryClassifier:
         
         # Add the predictions from each tree
         for tree in self.trees:
-            update = tree.predict(X)
-            Fm += self.learning_rate * update
+            y_pred, y_pred_proba = tree.predict(X)
+            Fm += self.learning_rate * y_pred
             
         # Calculate probabilities using the sigmoid function
         probs = self._sigmoid(Fm)
@@ -59,5 +59,6 @@ class GradientBoostingBinaryClassifier:
     def evaluate(self, X, y):
         # Evaluate the model using the given data
         y_pred = self.predict(X)
-        metrics = ClassificationMetrics(y, y_pred)
+        y_pred_proba = self.predict_proba(X)
+        metrics = ClassificationMetrics(y, y_pred, y_pred_proba[:, 1])
         return metrics
