@@ -77,11 +77,9 @@ class Experiment:
     def run(self):
         try:
             self.setup()
-            print(f'Running experiment {self.name}...')
             # Run the experiment
             results = self._run_experiment()
             self.save_results(results)
-            print(f'Experiment {self.name} completed successfully!')
         except Exception as e:
             print(f'Error running experiment {self.name}: {e}')
             raise e
