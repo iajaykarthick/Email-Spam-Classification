@@ -168,11 +168,16 @@ class CART:
     
     def predict(self, X):
         predictions = [self._predict_input(x, self.root) for x in X]
-        return np.array(predictions)
+        # separate value and class distribution
+        y_pred = np.array([p[0] for p in predictions])
+        y_pred_proba = np.array([p[1] for p in predictions])
+        return y_pred, y_pred_proba
     
     def _predict_input(self, x, node):
         if node.is_leaf():
-            return node.value
+            # return both value and predict probability for classification
+            prob_positive_class = node.class_distribution[1] / node.num_samples if len(node.class_distribution) > 1 else 0
+            return node.value, prob_positive_class
         feature_value = x[node.feature]
         if feature_value <= node.threshold:
             return self._predict_input(x, node.left)
@@ -180,11 +185,11 @@ class CART:
             return self._predict_input(x, node.right)
         
     def evaluate(self, X, y):
-        predictions = self.predict(X)
+        y_pred, y_pred_proba = self.predict(X)
         if self.criterion == 'mse':
-            return np.mean((y - predictions) ** 2)
+            return np.mean((y - y_pred) ** 2)
         # classification
-        return ClassificationMetrics(y, predictions)
+        return ClassificationMetrics(y, y_pred, y_pred_proba)
 
     def export_graphviz(self, full_verbose=False, leaf_verbose=False):
         
