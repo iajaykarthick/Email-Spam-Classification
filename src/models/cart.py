@@ -175,6 +175,8 @@ class CART:
     
     def _predict_input(self, x, node):
         if node.is_leaf():
+            if self.criterion == 'mse':
+                return node.value, None
             # return both value and predict probability for classification
             prob_positive_class = node.class_distribution[1] / node.num_samples if len(node.class_distribution) > 1 else 0
             return node.value, prob_positive_class
@@ -186,9 +188,6 @@ class CART:
         
     def evaluate(self, X, y):
         y_pred, y_pred_proba = self.predict(X)
-        if self.criterion == 'mse':
-            return np.mean((y - y_pred) ** 2)
-        # classification
         return ClassificationMetrics(y, y_pred, y_pred_proba)
 
     def export_graphviz(self, full_verbose=False, leaf_verbose=False):
