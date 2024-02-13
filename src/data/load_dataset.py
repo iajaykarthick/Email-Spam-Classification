@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 from .data_download import download_data
-from src.config import RAW_DATA_DIR, SPAMBASE_URL
+from src.config import RAW_DATA_DIR, DATA_URL
 
 
 def load_spambase():
@@ -12,8 +12,8 @@ def load_spambase():
     """
     spambase = os.path.join(RAW_DATA_DIR, 'spambase.data')
     if not os.path.exists(spambase):
-        file_name = SPAMBASE_URL.split('/')[-1]
-        download_data(SPAMBASE_URL, file_name)
+        file_name = DATA_URL.split('/')[-1]
+        download_data(DATA_URL, file_name)
     data = np.loadtxt(spambase, delimiter=',')
     X = data[:, :-1]
     y = data[:, -1]
