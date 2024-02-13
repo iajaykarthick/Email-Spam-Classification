@@ -1,4 +1,4 @@
 {
-    "experiment_id": "custom_cart_v2",
-    "description": "Decision Tree Cart - own implementation"
+    "experiment_id": "sklearn_cart_w_best_params",
+    "description": "Decision Tree Cart - sklearn implementation"
 }
