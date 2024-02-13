@@ -3,6 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from sklearn.metrics import auc
+
+
 class MetricsVisualizer:
     def __init__(self, metrics_objects):
         """
@@ -12,24 +15,51 @@ class MetricsVisualizer:
         """
         self.metrics_objects = metrics_objects if isinstance(metrics_objects, list) else [metrics_objects]
 
-    def plot_roc_curve(self):
+    def plot_roc_curve(self, save_fig=False, fig_path=None):
         plt.figure(figsize=(10, 8))
         
+        
+        # Initialize variables to store TPRs and AUCs
+        tprs = []
+        aucs = []
+        base_fpr = np.linspace(0, 1, 101)
+        
+        # Plot ROC curve for each metrics object
         for metrics in self.metrics_objects:
             fpr, tpr = metrics._roc_curve()
             roc_auc = metrics._auc()
-            label = f'{metrics.exp_id} AUC = {roc_auc}' if metrics.exp_id else f'AUC = {roc_auc}'
-            plt.plot(fpr, tpr, label=label)
+            label = f'{metrics.exp_id} AUC = {roc_auc:.2f}' if metrics.exp_id else f'AUC = {roc_auc:.2f}'
+            plt.plot(fpr, tpr, label=label, linewidth=1)
+            
+            # Interpolate TPRs for the current ROC curve
+            tpr_interp = np.interp(base_fpr, fpr, tpr)
+            tpr_interp[0] = 0.0 # Ensure the curve starts at the origin
+            tprs.append(tpr_interp)
         
+        # Calculate and plot the mean ROC curve if there are multiple curves
+        if len(self.metrics_objects) > 1:
+            mean_tpr = np.mean(tprs, axis=0)
+            mean_tpr[-1] = 1.0  # Ensure the curve ends at (1, 1)
+            mean_auc = auc(base_fpr, mean_tpr)
+            plt.plot(base_fpr, mean_tpr, 'b-', label=f'Mean AUC = {mean_auc:.2f}', linewidth=2)
+        
+        # Plot the chance line
         plt.plot([0, 1], [0, 1], 'k--', label='Chance')
+        
+        # Add axis labels, title and legend
         plt.xlim([0.0, 1.0])
         plt.ylim([0.0, 1.05])
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
         plt.title('Receiver Operating Characteristic')
         plt.legend(loc="lower right")
-        plt.show()
-
+        
+        if save_fig and fig_path:
+            plt.savefig(fig_path)
+            plt.close()
+        else:
+            plt.show()
+            
     def plot_precision_recall_curve(self):
         plt.figure(figsize=(10, 8))
         
