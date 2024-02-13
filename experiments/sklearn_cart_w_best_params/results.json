@@ -1,0 +1,41 @@
+{
+    "name": "sklearn_cart_w_best_params",
+    "description": "Sklearn cart with best parameters",
+    "results": [
+        {
+            "fold": 1,
+            "metrics": {
+                "accuracy": 0.9153094462540716,
+                "f1": 0.8934426229508197
+            }
+        },
+        {
+            "fold": 2,
+            "metrics": {
+                "accuracy": 0.9119565217391304,
+                "f1": 0.8873435326842837
+            }
+        },
+        {
+            "fold": 3,
+            "metrics": {
+                "accuracy": 0.9260869565217391,
+                "f1": 0.9
+            }
+        },
+        {
+            "fold": 4,
+            "metrics": {
+                "accuracy": 0.9260869565217391,
+                "f1": 0.9086021505376345
+            }
+        },
+        {
+            "fold": 5,
+            "metrics": {
+                "accuracy": 0.8956521739130435,
+                "f1": 0.8647887323943663
+            }
+        }
+    ]
+}
