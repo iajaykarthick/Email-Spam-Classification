@@ -105,7 +105,9 @@ class Experiment:
                 X_train, X_test = X[train_index], X[test_index]
                 y_train, y_test = y[train_index], y[test_index]
                 self.model.fit(X_train, y_train)
-                y_pred, y_pred_proba = self.model.predict(X_test)
+                y_pred = self.model.predict(X_test)
+                y_pred_proba = self.model.predict_proba(X_test)[:, 1]
+                
                 metrics_obj = ClassificationMetrics(
                     exp_id=self.name + f'_fold_{len(fold_results) + 1}',
                     y_true=y_test,
@@ -127,7 +129,8 @@ class Experiment:
             # Use a single train-test split
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=self.random_state)
             self.model.fit(X_train, y_train)
-            y_pred, y_pred_proba = self.model.predict(X_test)
+            y_pred = self.model.predict(X_test)
+            y_pred_proba = self.model.predict_proba(X_test)[:, 1]
             metrics_obj = ClassificationMetrics(
                 exp_id=self.name,
                 y_true=y_test,
