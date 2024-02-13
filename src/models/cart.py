@@ -61,7 +61,7 @@ class CART:
                     left=left_node,
                     right=right_node,
                     num_samples=num_samples,
-                    class_distribution=self._class_distribution(y)
+                    class_distribution=self._class_distribution(y, num_classes=2)
                 )
                 return current_node
         
@@ -71,7 +71,7 @@ class CART:
         leaf_value = self._to_leaf(y)
         return self.Node(
             num_samples=num_samples, 
-            class_distribution=self._class_distribution(y),
+            class_distribution=self._class_distribution(y, num_classes=2),
             value=leaf_value
         )
         
@@ -80,10 +80,14 @@ class CART:
             return np.mean(y)
         return self._bincount(y).argmax()
         
-    def _class_distribution(self, y):
+    def _class_distribution(self, y, num_classes=None):
         if self.criterion == 'mse':
-            return None
-        return self._bincount(y)
+            return np.mean(y)
+        else:
+            if num_classes is None:
+                num_classes = np.max(y) + 1 
+            class_distribution = np.bincount(y, minlength=num_classes)
+            return class_distribution
     
     def _best_split(self, X, y, num_samples, num_features):
         best_split = {}
@@ -168,26 +172,37 @@ class CART:
     
     def predict(self, X):
         predictions = [self._predict_input(x, self.root) for x in X]
-        # separate value and class distribution
-        y_pred = np.array([p[0] for p in predictions])
-        y_pred_proba = np.array([p[1] for p in predictions])
-        return y_pred, y_pred_proba
+        predictions = np.array(predictions)
+        return predictions
+    
+    def predict_proba(self, X):
+        predictions = [self._predict_proba_input(x, self.root) for x in X]
+        predictions = np.array(predictions)
+        return predictions
     
     def _predict_input(self, x, node):
         if node.is_leaf():
-            if self.criterion == 'mse':
-                return node.value, None
-            # return both value and predict probability for classification
-            prob_positive_class = node.class_distribution[1] / node.num_samples if len(node.class_distribution) > 1 else 0
-            return node.value, prob_positive_class
+            return node.value
         feature_value = x[node.feature]
         if feature_value <= node.threshold:
             return self._predict_input(x, node.left)
         else:
             return self._predict_input(x, node.right)
         
+    def _predict_proba_input(self, x, node):
+        if node.is_leaf():
+            return node.class_distribution / node.num_samples
+        feature_value = x[node.feature]
+        if feature_value <= node.threshold:
+            return self._predict_proba_input(x, node.left)
+        else:
+            return self._predict_proba_input(x, node.right)
+        
     def evaluate(self, X, y):
         y_pred, y_pred_proba = self.predict(X)
+        if self.criterion == 'mse':
+            return np.mean((y - y_pred) ** 2)
+        # classification
         return ClassificationMetrics(y, y_pred, y_pred_proba)
 
     def export_graphviz(self, full_verbose=False, leaf_verbose=False):
