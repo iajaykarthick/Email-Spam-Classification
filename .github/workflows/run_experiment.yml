@@ -15,18 +15,10 @@ jobs:
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x' 
-
-      - name: Install dependencies
+      - name: Build and run Docker image
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt 
-
-      - name: Run Python script
-        run: python experiment_runner.py
+          docker build -t experiment-runner .
+          docker run -v ${{github.workspace}}:/app experiment-runner python experiment_runner.py
 
       - name: Commit and push changes
         run: |
