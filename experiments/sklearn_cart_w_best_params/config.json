@@ -1,0 +1,16 @@
+{
+    "name": "sklearn_cart_w_best_params",
+    "description": "Sklearn cart with best parameters",
+    "model_class": "sklearn.tree.DecisionTreeClassifier",
+    "model_params": {
+        "max_depth": 10,
+        "min_samples_split": 5,
+        "min_impurity_decrease": 0,
+        "max_features": 42
+    },
+    "metrics": [
+        "accuracy",
+        "f1",
+        "roc_auc"
+    ]
+}
