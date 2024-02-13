@@ -25,3 +25,10 @@ jobs:
 
       - name: Run Python script
         run: python experiment_runner.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -am "Update experiment results"
+          git push
