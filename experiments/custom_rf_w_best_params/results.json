@@ -1,0 +1,41 @@
+{
+    "name": "custom_rf_w_best_params",
+    "description": "Custom random forest with best parameters",
+    "results": [
+        {
+            "fold": 1,
+            "metrics": {
+                "accuracy": 0.9424538545059717,
+                "f1": 0.9260808926080893
+            }
+        },
+        {
+            "fold": 2,
+            "metrics": {
+                "accuracy": 0.9315217391304348,
+                "f1": 0.9085631349782293
+            }
+        },
+        {
+            "fold": 3,
+            "metrics": {
+                "accuracy": 0.9380434782608695,
+                "f1": 0.9189189189189189
+            }
+        },
+        {
+            "fold": 4,
+            "metrics": {
+                "accuracy": 0.9402173913043478,
+                "f1": 0.9187592319054654
+            }
+        },
+        {
+            "fold": 5,
+            "metrics": {
+                "accuracy": 0.9423913043478261,
+                "f1": 0.9284750337381915
+            }
+        }
+    ]
+}

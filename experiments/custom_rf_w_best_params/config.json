@@ -1,0 +1,16 @@
+{
+    "name": "custom_rf_w_best_params",
+    "description": "Custom random forest with best parameters",
+    "model_class": "src.models.random_forest.RandomForestClassifier",
+    "model_params": {
+        "max_depth": 10,
+        "min_samples_split": 2,
+        "min_impurity_decrease": 0,
+        "max_features": 42
+    },
+    "metrics": [
+        "accuracy",
+        "f1",
+        "roc_auc"
+    ]
+}
