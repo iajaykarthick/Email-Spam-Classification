@@ -1,0 +1,1 @@
+![Status of last experiment run:](https://github.com/iajaykarthick/Email-Spam-Classification/actions/workflows/run_experiment.yml/badge.svg)
