@@ -1,7 +1,7 @@
 {
-    "name": "custom_rf_w_best_params",
-    "description": "Custom random forest with best parameters",
-    "model_class": "src.models.random_forest.RandomForestClassifier",
+    "name": "sklearn_rf_w_best_params",
+    "description": "Random Forest with best parameters",
+    "model_class": "sklearn.ensemble.RandomForestClassifier",
     "model_params": {
         "n_estimators": 500,
         "max_depth": 10,
