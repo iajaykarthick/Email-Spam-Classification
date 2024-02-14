@@ -14,3 +14,5 @@ requests-mock
 
 nltk
 scikit-learn
+
+streamlit
