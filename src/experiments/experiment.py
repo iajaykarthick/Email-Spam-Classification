@@ -79,7 +79,7 @@ class Experiment:
             'name': self.name,
             'description': self.description,
             'results': results,
-            'training_time': f"{str(training_time / 60):.2f} minutes",
+            'training_time': f'{training_time:.2f} seconds'
         }
         with open(self.results_path, 'w') as f:
             json.dump(results, f, indent=4)
@@ -91,7 +91,7 @@ class Experiment:
             training_start_time = time.time()
             # Run the experiment
             results = self._run_experiment()
-            training_time = time.time() - training_start_time
+            training_time = (time.time() - training_start_time).total_seconds()
             self.save_results(results, training_time)
             self._save_model()
             
