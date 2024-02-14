@@ -8,3 +8,5 @@ seaborn
 scipy
 scikit-learn
 graphviz
+pytest
+requests-mock
