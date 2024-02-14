@@ -1,7 +1,8 @@
 import os
+import time
 import json
+import joblib
 import importlib
-
 import numpy as np
 
 from src.config import EXPERIMENT_DIR
@@ -14,7 +15,7 @@ from sklearn.model_selection import train_test_split
 
 
 class Experiment:
-    def __init__(self, name, model_class, model_params, metrics, description=None, n_splits=5, random_state=None):
+    def __init__(self, name, model_class, model_params, metrics, description=None, n_splits=5, random_state=None, save_model=None):
         self.name = name
         self.description = description or ''
         self.model_class = model_class
@@ -22,6 +23,7 @@ class Experiment:
         self.metrics = metrics
         self.n_splits = n_splits
         self.random_state = random_state
+        self.save_model = save_model
         
         self.experiment_dir = os.path.join(EXPERIMENT_DIR, self.name)
         self.config_path = os.path.join(self.experiment_dir, 'config.json')
@@ -43,9 +45,17 @@ class Experiment:
             description=config['description'],
             model_class=config['model_class'],
             model_params=config['model_params'],
-            metrics=config['metrics']
+            metrics=config['metrics'],
+            save_model=config.get('save_model', False)
         )
 
+
+    def _save_model(self):
+        # save model using joblib
+        if self.save_model:
+            model_path = os.path.join(self.experiment_dir, 'model.joblib')
+            joblib.dump(self.model, model_path)
+            print(f'Model saved to {model_path}')
 
     def setup(self):
         os.makedirs(self.experiment_dir, exist_ok=True)
@@ -63,12 +73,13 @@ class Experiment:
             json.dump(config, f, indent=4)
         print(f'Experiment Configuration saved to {self.config_path}')
         
-    def save_results(self, results):
+    def save_results(self, results, training_time):
         """Save the results of the experiment to a json file"""
         results = {
             'name': self.name,
             'description': self.description,
-            'results': results
+            'results': results,
+            'training_time': f"{str(training_time / 60):.2f} minutes",
         }
         with open(self.results_path, 'w') as f:
             json.dump(results, f, indent=4)
@@ -77,9 +88,13 @@ class Experiment:
     def run(self):
         try:
             self.setup()
+            training_start_time = time.time()
             # Run the experiment
             results = self._run_experiment()
-            self.save_results(results)
+            training_time = time.time() - training_start_time
+            self.save_results(results, training_time)
+            self._save_model()
+            
         except Exception as e:
             print(f'Error running experiment {self.name}: {e}')
             raise e
