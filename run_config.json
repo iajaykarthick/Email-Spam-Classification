@@ -1,4 +1,4 @@
 {
     "experiment_id": "sklearn_cart_w_best_params",
-    "description": "Train and save a CART model with the best hyperparameters found in the previous step"
+    "description": "Train and save a CART model with the best hyperparameters found in previous step"
 }
