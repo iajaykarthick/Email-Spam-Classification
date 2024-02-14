@@ -24,5 +24,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "Actions Bot 🤖"
-          git commit -am "Update experiment results"
+          git add .
+          git commit -m "Update experiment results"
           git push
