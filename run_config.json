@@ -1,4 +1,4 @@
 {
     "experiment_id": "sklearn_logistic_regression_w_best_params",
-    "description": "Logistic Regression - SKlearn"
+    "description": "Update max_iter parameter in logistic regression model"
 }
