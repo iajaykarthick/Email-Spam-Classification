@@ -1,0 +1,41 @@
+{
+    "name": "custom_logistic_regression_w_best_params",
+    "description": "Custom logistic regression with best hyperparameters.",
+    "results": [
+        {
+            "fold": 1,
+            "metrics": {
+                "accuracy": 0.8870792616720955,
+                "f1": 0
+            }
+        },
+        {
+            "fold": 2,
+            "metrics": {
+                "accuracy": 0.8869565217391304,
+                "f1": 0
+            }
+        },
+        {
+            "fold": 3,
+            "metrics": {
+                "accuracy": 0.8913043478260869,
+                "f1": 0
+            }
+        },
+        {
+            "fold": 4,
+            "metrics": {
+                "accuracy": 0.8815217391304347,
+                "f1": 0
+            }
+        },
+        {
+            "fold": 5,
+            "metrics": {
+                "accuracy": 0.8880434782608696,
+                "f1": 0
+            }
+        }
+    ]
+}
