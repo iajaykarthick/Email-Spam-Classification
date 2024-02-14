@@ -10,7 +10,7 @@
     "description_bkup2": "Train and save a CART model (own implementation) with the best hyperparameters found in the previous step",
     
     "experiment_id_bkup3": "custom_cart_v2",
-    "description_bkup3": "Train and save a CART model (own implementation) with the best hyperparameters found in the previous step",
+    "description_bkup3": "Train and save a CART model (own implementation) with the best hyperparameters found in the previous step"
 
 }
     
