@@ -55,3 +55,4 @@ class LogisticRegression:
         proba_class_1 = self.sigmoid(z)
         proba_class_0 = 1 - proba_class_1
         return np.vstack((proba_class_0, proba_class_1)).T
+    
