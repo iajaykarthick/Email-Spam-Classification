@@ -1,4 +1,4 @@
 {
-    "experiment_id": "custom_rf_w_best_params",
+    "experiment_id": "custom_logistic_regression_w_best_params",
     "description": "Random Forest - Own implementation"
 }
