@@ -1,4 +1,4 @@
 {
-    "experiment_id": "custom_logistic_regression_w_best_params",
-    "description": "Logistic Regression - Own Implementation"
+    "experiment_id": "sklearn_logistic_regression_w_best_params",
+    "description": "Logistic Regression - SKlearn"
 }
