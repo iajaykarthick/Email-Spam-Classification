@@ -18,7 +18,8 @@ jobs:
       - name: Build and run Docker image
         run: |
           docker build -t experiment-runner .
-          docker run -v ${{github.workspace}}:/app experiment-runner python experiment_runner.py
+          # enable logging to see the output of the experiment
+          docker run -v ${{github.workspace}}:/app experiment-runner python -u run_experiment.py
 
       - name: Commit and push changes
         run: |
