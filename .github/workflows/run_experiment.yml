@@ -19,7 +19,7 @@ jobs:
         run: |
           docker build -t experiment-runner .
           # enable logging to see the output of the experiment
-          docker run -v ${{github.workspace}}:/app experiment-runner python -u run_experiment.py
+          docker run -v ${{github.workspace}}:/app experiment-runner python -u  experiment_runner.py
 
       - name: Commit and push changes
         run: |
