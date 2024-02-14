@@ -1,18 +1,25 @@
 import os
 import zipfile
 import requests
+from requests.exceptions import RequestException
 from src.config import RAW_DATA_DIR
 
 
-def download_data(url, filename):
+def download_data(url, filename, save_dir=RAW_DATA_DIR):
     """
     Download data from a given url and save it to the data/raw folder
     Returns the path to the downloaded file
     """
-    response = requests.get(url)
-    with open(f'{RAW_DATA_DIR}/{filename}', 'wb') as f:
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+    except RequestException as e:
+        print(f'Error downloading data from {url}')
+        raise e
+    save_file_path = os.path.join(save_dir, filename)
+    with open(save_file_path, 'wb') as f:
         f.write(response.content)
-    return f'{RAW_DATA_DIR}/{filename}'
+    return save_file_path
 
 
 def extract_zip_data(file_path, extract_dir, delete_zip=False):
