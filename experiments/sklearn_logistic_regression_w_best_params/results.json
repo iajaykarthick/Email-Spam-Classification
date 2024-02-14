@@ -1,0 +1,41 @@
+{
+    "name": "sklearn_logistic_regression_w_best_params",
+    "description": "Sklearn logistic regression with best parameters",
+    "results": [
+        {
+            "fold": 1,
+            "metrics": {
+                "accuracy": 0.6384364820846905,
+                "f1": 0.6807286673058486
+            }
+        },
+        {
+            "fold": 2,
+            "metrics": {
+                "accuracy": 0.7239130434782609,
+                "f1": 0.7348643006263048
+            }
+        },
+        {
+            "fold": 3,
+            "metrics": {
+                "accuracy": 0.6858695652173913,
+                "f1": 0.7054026503567787
+            }
+        },
+        {
+            "fold": 4,
+            "metrics": {
+                "accuracy": 0.6782608695652174,
+                "f1": 0.705765407554672
+            }
+        },
+        {
+            "fold": 5,
+            "metrics": {
+                "accuracy": 0.675,
+                "f1": 0.7012987012987013
+            }
+        }
+    ]
+}
