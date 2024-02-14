@@ -1,0 +1,42 @@
+{
+    "name": "sklearn_rf_w_best_params",
+    "description": "Random Forest with best parameters",
+    "results": [
+        {
+            "fold": 1,
+            "metrics": {
+                "accuracy": 0.9337676438653637,
+                "f1": 0.916323731138546
+            }
+        },
+        {
+            "fold": 2,
+            "metrics": {
+                "accuracy": 0.9467391304347826,
+                "f1": 0.9298998569384836
+            }
+        },
+        {
+            "fold": 3,
+            "metrics": {
+                "accuracy": 0.9369565217391305,
+                "f1": 0.9154518950437318
+            }
+        },
+        {
+            "fold": 4,
+            "metrics": {
+                "accuracy": 0.9434782608695652,
+                "f1": 0.925287356321839
+            }
+        },
+        {
+            "fold": 5,
+            "metrics": {
+                "accuracy": 0.9445652173913044,
+                "f1": 0.9296551724137931
+            }
+        }
+    ],
+    "training_time": "59.89 seconds"
+}
