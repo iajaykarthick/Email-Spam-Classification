@@ -6,3 +6,4 @@
 
 This Email Spam Classifier is an MLOps project aimed at building and deploying a machine learning model to identify and filter out unwanted emails. The project integrates best practices in Machine Learning Operations (MLOps) to streamline the model development, testing, and deployment phases.
 
+![app image](reports/app_screenshot.png)
