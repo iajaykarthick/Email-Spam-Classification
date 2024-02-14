@@ -9,3 +9,7 @@ ADD . /app
 # Install the dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+RUN pip install pytest
+
+# Run the tests when the container launches
+CMD ["pytest"]
