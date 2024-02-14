@@ -53,7 +53,9 @@ class RandomForestClassifier:
 
     def predict(self, X):
         # Collect predictions from each tree
-        tree_preds = np.array([tree.predict(X) for tree in self.trees])
+        # Parallelize prediction
+        tree_preds = np.array(Parallel(n_jobs=-1)(delayed(tree.predict)(X) for tree in self.trees))
+        # tree_preds = np.array([tree.predict(X) for tree in self.trees])
         
         # For classification, take the mode (most common label) across trees
         mode_preds, _ = mode(tree_preds, axis=0)
