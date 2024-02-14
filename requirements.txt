@@ -10,3 +10,7 @@ scikit-learn
 graphviz
 pytest
 requests-mock
+
+
+nltk
+scikit-learn
