@@ -79,7 +79,7 @@ class Experiment:
             'name': self.name,
             'description': self.description,
             'results': results,
-            'training_time': f'{training_time:.2f} seconds'
+            'training_time': training_time
         }
         with open(self.results_path, 'w') as f:
             json.dump(results, f, indent=4)
@@ -91,7 +91,9 @@ class Experiment:
             training_start_time = time.time()
             # Run the experiment
             results = self._run_experiment()
-            training_time = (time.time() - training_start_time).total_seconds()
+            training_time = time.time() - training_start_time
+            training_time_minutes = training_time / 60
+            training_time = f"{training_time_minutes:.2f} minutes" if training_time_minutes > 1 else f"{training_time:.2f} seconds"
             self.save_results(results, training_time)
             self._save_model()
             
