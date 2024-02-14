@@ -1,10 +1,13 @@
 {
 
-    "experiment_id": "custom_cart_w_best_params",
+    "experiment_id": "custom_cart_v2",
     "description": "Train and save a CART model (own implementation) with the best hyperparameters found in the previous step",
 
     "experiment_id_bkup1": "sklearn_cart_w_best_params",
-    "description_bkup1": "Train and save a CART model with the best hyperparameters found in the previous step"
-    
+    "description_bkup1": "Train and save a CART model with the best hyperparameters found in the previous step",
+
+    "experiment_id_bkup2": "custom_cart_w_best_params",
+    "description_bkup2": "Train and save a CART model (own implementation) with the best hyperparameters found in the previous step"
+
 }
     
