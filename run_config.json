@@ -3,7 +3,6 @@
     "experiment_id": "custom_logistic_regression_w_best_params",
     "description": "Train and save a Logistic Regression model (own implementation) with the best hyperparameters found in the previous step",
 
-
     "experiment_id_bkup1": "sklearn_cart_w_best_params",
     "description_bkup1": "Train and save a CART model with the best hyperparameters found in the previous step",
 
@@ -17,7 +16,7 @@
     "description_bkup4": "Train and save a Random Forest model (own implementation) with the best hyperparameters found in the previous step",
 
     "experiment_id_bkup5": "sklearn_rf_w_best_params",
-    "description_bkup5": "Train and save a Random Forest model with the best hyperparameters found in the previous step",
+    "description_bkup5": "Train and save a Random Forest model with the best hyperparameters found in the previous step"
 
 }
     
