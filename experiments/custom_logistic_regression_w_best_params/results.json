@@ -5,37 +5,38 @@
         {
             "fold": 1,
             "metrics": {
-                "accuracy": 0.8870792616720955,
+                "accuracy": 0.8859934853420195,
                 "f1": 0
             }
         },
         {
             "fold": 2,
             "metrics": {
-                "accuracy": 0.8869565217391304,
+                "accuracy": 0.9010869565217391,
                 "f1": 0
             }
         },
         {
             "fold": 3,
             "metrics": {
-                "accuracy": 0.8913043478260869,
+                "accuracy": 0.8706521739130435,
                 "f1": 0
             }
         },
         {
             "fold": 4,
             "metrics": {
-                "accuracy": 0.8815217391304347,
+                "accuracy": 0.8913043478260869,
                 "f1": 0
             }
         },
         {
             "fold": 5,
             "metrics": {
-                "accuracy": 0.8880434782608696,
+                "accuracy": 0.8945652173913043,
                 "f1": 0
             }
         }
-    ]
+    ],
+    "training_time": "11.67 minutes"
 }

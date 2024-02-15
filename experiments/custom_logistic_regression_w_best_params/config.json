@@ -8,7 +8,6 @@
         "tolerance": 1e-08,
         "lambda_reg": 0.1
     },
-    "save_model": true,
     "metrics": [
         "accuracy",
         "f1",
