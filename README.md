@@ -1,14 +1,14 @@
 ![Status of last experiment run:](https://github.com/iajaykarthick/Email-Spam-Classification/actions/workflows/run_experiment.yml/badge.svg)
 
-# Email Spam Classifier Project
+# :inbox_tray: Email Spam Classifier Project
 
-## Overview
+## 🔍 Overview
 
 This project presents a robust machine learning framework for spam detection, featuring a variety of algorithms implemented from scratch, including Decision Trees, Ensemble Methods (Random Forest, Gradient Boosting, and XGBoost), Logistic Regression, Naive Bayes, Support Vector Machines (SVM), and unsupervised clustering techniques. Each custom implementation is thoroughly experimented with and benchmarked against its scikit-learn counterpart using the UCI Spambase dataset. The project includes a custom-built experimentation framework, automated CI/CD pipelines for consistent testing and deployment, and a user-friendly interface for real-time predictions.
 
 ![app image](reports/app_screenshot.png)
 
-## Project Structure
+## :rocket: Project Structure
 - `.github/workflows`: Contains CI/CD pipelines for automated testing, training, and deploying models.
 - `experiments`: Configuration files for running a variety of experiments, their corresponding results and also serialized models.
 - `models`: Serialized models from both custom implementations and scikit-learn models.
