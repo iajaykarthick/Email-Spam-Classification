@@ -8,7 +8,6 @@
         "penalty": "l2",
         "solver": "sag"
     },
-    "save_model": true,
     "metrics": [
         "accuracy",
         "f1",
